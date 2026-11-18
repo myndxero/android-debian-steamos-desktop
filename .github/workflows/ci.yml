@@ -1,0 +1,26 @@
+name: ShellCheck & Dry-Run CI
+
+on:
+  push:
+    branches: ["main", "**"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check bash syntax
+        run: bash -n install-debian-kde.sh
+
+      - name: Run ShellCheck
+        run: shellcheck install-debian-kde.sh
+
+      - name: Test Termux mode dry-run
+        run: ./install-debian-kde.sh --env termux --dry-run
+
+      - name: Test Native mode dry-run (with gaming & update flags)
+        run: ./install-debian-kde.sh --env native --with-gaming --upgrade-trixie --update --dry-run
